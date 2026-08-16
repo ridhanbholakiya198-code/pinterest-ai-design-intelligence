@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper Functions
+    function isSignedIn() { return request.auth != null; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidUser(data) {
+      return (
+        (!('pinterest_connected' in data) || data.pinterest_connected is bool) &&
+        (!('pinterest_access_token' in data) || (data.pinterest_access_token is string && data.pinterest_access_token.size() <= 1024)) &&
+        (!('pinterest_refresh_token' in data) || (data.pinterest_refresh_token is string && data.pinterest_refresh_token.size() <= 1024)) &&
+        (!('pinterest_token_expires_at' in data) || data.pinterest_token_expires_at is number) &&
+        (!('updated_at' in data) || data.updated_at is number)
+      );
+    }
+
+    function isValidPin(data) {
+      return (
+        data.keys().hasAll(['user_id', 'pinterest_id', 'status']) &&
+        data.user_id is string && data.user_id.size() <= 128 &&
+        data.pinterest_id is string && data.pinterest_id.size() <= 128 &&
+        data.status is string && data.status.size() <= 64 &&
+        (!('board_id' in data) || (data.board_id is string && data.board_id.size() <= 128)) &&
+        (!('title' in data) || (data.title is string && data.title.size() <= 512)) &&
+        (!('description' in data) || (data.description is string && data.description.size() <= 2048)) &&
+        (!('link' in data) || (data.link is string && data.link.size() <= 1024)) &&
+        (!('media' in data) || data.media is map) &&
+        (!('alt_text' in data) || (data.alt_text is string && data.alt_text.size() <= 2048)) &&
+        (!('dominant_color' in data) || (data.dominant_color is string && data.dominant_color.size() <= 32)) &&
+        (!('imported_at' in data) || data.imported_at is number) &&
+        (!('processing_started_at' in data) || data.processing_started_at is number) &&
+        (!('processed_at' in data) || data.processed_at is number) &&
+        (!('failed_at' in data) || data.failed_at is number) &&
+        (!('error_message' in data) || (data.error_message is string && data.error_message.size() <= 2048)) &&
+        (!('retry_at' in data) || data.retry_at is number) &&
+        (!('processing_attempts' in data) || data.processing_attempts is number) &&
+        (!('analysis' in data) || data.analysis is map)
+      );
+    }
+
+    match /users/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming());
+    }
+
+    match /pins/{pinId} {
+      allow read, write: if isSignedIn() && (existing() == null || existing().user_id == request.auth.uid) && incoming().user_id == request.auth.uid && isValidPin(incoming());
+    }
+
+    match /sync_runs/{syncRunId} {
+      allow read, write: if isSignedIn() && (existing() == null || existing().user_id == request.auth.uid) && incoming().user_id == request.auth.uid;
+    }
+  }
+}

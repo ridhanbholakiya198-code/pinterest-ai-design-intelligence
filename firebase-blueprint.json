@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and Pinterest connection info",
+      "type": "object",
+      "properties": {
+        "pinterest_connected": { "type": "boolean" },
+        "pinterest_access_token": { "type": "string", "maxLength": 1024 },
+        "pinterest_refresh_token": { "type": "string", "maxLength": 1024 },
+        "pinterest_token_expires_at": { "type": "number" },
+        "updated_at": { "type": "number" }
+      }
+    },
+    "Pin": {
+      "title": "Pin",
+      "description": "A saved Pinterest pin with AI analysis",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string", "maxLength": 128 },
+        "pinterest_id": { "type": "string", "maxLength": 128 },
+        "board_id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 512 },
+        "description": { "type": "string", "maxLength": 2048 },
+        "link": { "type": "string", "maxLength": 1024 },
+        "media": { "type": "object" },
+        "alt_text": { "type": "string", "maxLength": 2048 },
+        "dominant_color": { "type": "string", "maxLength": 32 },
+        "imported_at": { "type": "number" },
+        "status": { "type": "string", "maxLength": 64 },
+        "processing_started_at": { "type": "number" },
+        "processed_at": { "type": "number" },
+        "failed_at": { "type": "number" },
+        "error_message": { "type": "string", "maxLength": 2048 },
+        "retry_at": { "type": "number" },
+        "processing_attempts": { "type": "number" },
+        "analysis": { "type": "object" }
+      },
+      "required": ["user_id", "pinterest_id", "status"]
+    },
+    "SyncRun": {
+      "title": "SyncRun",
+      "description": "A record of a Pinterest import sync",
+      "type": "object",
+      "properties": {
+        "user_id": { "type": "string", "maxLength": 128 },
+        "status": { "type": "string", "maxLength": 64 },
+        "started_at": { "type": "number" },
+        "completed_at": { "type": "number" },
+        "failed_at": { "type": "number" },
+        "pins_discovered": { "type": "number" },
+        "error": { "type": "string", "maxLength": 2048 }
+      },
+      "required": ["user_id", "status", "started_at"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user connection info."
+    },
+    "pins/{pinId}": {
+      "schema": { "$ref": "#/entities/Pin" },
+      "description": "Stores individual pins and their AI analysis."
+    },
+    "sync_runs/{syncRunId}": {
+      "schema": { "$ref": "#/entities/SyncRun" },
+      "description": "Stores sync job records."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Pinterest AI Design Intelligence",
+  "description": "My personal visual memory, understood by AI. Connects to Pinterest to analyze, categorize, and synthesize design inspiration using Gemini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
