@@ -19,7 +19,7 @@ export default function Privacy() {
       <main className="max-w-3xl mx-auto px-6 py-16 md:py-24">
         <header className="mb-16">
           <h1 className="text-4xl md:text-5xl font-medium text-white mb-6 tracking-tight">Privacy Policy</h1>
-          <p className="text-lg text-neutral-400">Effective Date: [Insert Date Before Launch]</p>
+          <p className="text-lg text-neutral-400">Effective Date: August 16, 2026</p>
         </header>
 
         <div className="space-y-12 text-base md:text-lg leading-relaxed text-neutral-300">
@@ -142,11 +142,10 @@ export default function Privacy() {
             </p>
             <div className="p-4 bg-neutral-900 border border-neutral-800 rounded-xl inline-block">
               <p className="font-medium text-white">
-                Email: <a href="mailto:[YOUR_CONTACT_EMAIL_HERE]" className="text-blue-400 hover:text-blue-300 transition-colors">[YOUR_CONTACT_EMAIL_HERE]</a>
+                Email: <a href="mailto:rbholakiya@gmail.com" className="text-blue-400 hover:text-blue-300 transition-colors">rbholakiya@gmail.com</a>
               </p>
             </div>
             <p className="mt-4 text-sm text-neutral-500">
-              * Note: Please replace this placeholder with your actual contact email address prior to submitting this policy to the Pinterest Developer Console.
             </p>
           </section>
         </div>
